@@ -5909,8 +5909,9 @@ void Board::DrawBackdrop(Graphics* g)
 		}
 		else
 		{
-			// Show the house and the whole lawn, pushing the road off-screen.
-			Rect aSrcRect(0, 0, 990, 600);
+			// Widescreen: fit the whole authored background (house, lawn, road
+			// and the cemetery further right) into the logical screen.
+			Rect aSrcRect(0, 0, aBgImage->GetWidth(), 600);
 			Rect aDestRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 			g->DrawImage(aBgImage, aDestRect, aSrcRect);
 		}

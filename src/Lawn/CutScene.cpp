@@ -138,7 +138,7 @@ void CutScene::PlaceAZombie(ZombieType theZombieType, int theGridX, int theGridY
 
 	Zombie* aZombie = mBoard->AddZombieInRow(theZombieType, theGridY, -2);
 	PVZP_ASSERT(aZombie);
-	aZombie->mPosX = theGridX * 56 + 830 + (BOARD_WIDTH - 800);
+	aZombie->mPosX = theGridX * 56 + (BOARD_WIDTH - 180);
 	aZombie->mPosY = theGridY * 90 + 70;
 	if (theGridX % 2 == 1)
 	{
@@ -184,14 +184,14 @@ void CutScene::PlaceAZombie(ZombieType theZombieType, int theGridX, int theGridY
 	{
 		aZombie->mRenderOrder = Board::MakeRenderOrder(RenderLayer::RENDER_LAYER_GROUND, 0, 0);
 		aZombie->mRow = 0;
-		aZombie->mPosX = theGridX * 50.0f + 950.0f + (BOARD_WIDTH - 800);
+		aZombie->mPosX = theGridX * 50.0f + (BOARD_WIDTH - 80.0f);
 		aZombie->mPosY = 50.0f;
 	}
 	else if (theZombieType == ZombieType::ZOMBIE_BOBSLED)
 	{
 		aZombie->mRenderOrder = Board::MakeRenderOrder(RenderLayer::RENDER_LAYER_LAWN, 0, 1000);
 		aZombie->mRow = 0;
-		aZombie->mPosX = 1105.0f + (BOARD_WIDTH - 800);
+		aZombie->mPosX = static_cast<float>(BOARD_WIDTH);
 		aZombie->mPosY = 480.0f;
 	}
 }
@@ -1306,7 +1306,7 @@ void CutScene::AnimateBoard()
 	int aTimeReadySetPlant = TimeReadySetPlantStart + mLawnMowerTime + mSodTime + mGraveStoneTime + mCrazyDaveTime + mFogTime + mBossTime;
 	if (mReadySetPlantTime > 0 && mCutsceneTime == aTimeReadySetPlant)
 	{
-		mApp->AddReanimation(400, 324, Board::MakeRenderOrder(RenderLayer::RENDER_LAYER_SCREEN_FADE, 0, 0), ReanimationType::REANIM_READYSETPLANT);
+		mApp->AddReanimation(static_cast<float>(mApp->mWidth / 2), 324, Board::MakeRenderOrder(RenderLayer::RENDER_LAYER_SCREEN_FADE, 0, 0), ReanimationType::REANIM_READYSETPLANT);
 		mApp->PlaySample(SOUND_READYSETPLANT);
 		if (!mApp->IsFinalBossLevel())
 		{
