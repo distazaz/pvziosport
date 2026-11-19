@@ -581,6 +581,7 @@ bool DefinitionReadCompiledFile(const std::string& theCompiledFilePath, const De
 	aTimer.Start();
 
 	std::vector<uint8_t> aCompressedBuffer;
+	size_t aCompressedSize = 0;
 
 	// Prefer a freshly compiled cache file, but fall back to p_fopen so compiled
 	// definitions shipped inside main.pak are readable too.
@@ -589,7 +590,7 @@ bool DefinitionReadCompiledFile(const std::string& theCompiledFilePath, const De
 	if (aFileStream)
 	{
 		aFileStream.seekg(0, std::ios::end);
-		size_t aCompressedSize = (size_t)aFileStream.tellg();
+		aCompressedSize = (size_t)aFileStream.tellg();
 		aFileStream.seekg(0, std::ios::beg);
 		aCompressedBuffer.resize(aCompressedSize);
 		aFileStream.read(reinterpret_cast<char*>(aCompressedBuffer.data()), (std::streamsize)aCompressedSize);
@@ -604,9 +605,9 @@ bool DefinitionReadCompiledFile(const std::string& theCompiledFilePath, const De
 		PFILE* aPFile = p_fopen(theCompiledFilePath.c_str(), "rb");
 		if (aPFile == nullptr) return false;
 		p_fseek(aPFile, 0, SEEK_END);
-		long aCompressedSize = p_ftell(aPFile);
+		aCompressedSize = static_cast<size_t>(p_ftell(aPFile));
 		p_fseek(aPFile, 0, SEEK_SET);
-		aCompressedBuffer.resize(static_cast<size_t>(aCompressedSize));
+		aCompressedBuffer.resize(aCompressedSize);
 		size_t aRead = p_fread(aCompressedBuffer.data(), 1, static_cast<int>(aCompressedSize), aPFile);
 		p_fclose(aPFile);
 		if (aRead != static_cast<size_t>(aCompressedSize))

@@ -19,10 +19,8 @@ Usage:
 a patched main.pak; copy the original properties/ folder next to it as well.
 """
 import re
-import shutil
 import struct
 import sys
-import zlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -35,43 +33,6 @@ SIGNATURE = b"\xc0\x4a\xc0\xba"
 
 def xor_bytes(data):
     return bytes(b ^ XOR_KEY for b in data)
-
-
-def read_pak(path):
-    with path.open("rb") as f:
-        raw = f.read()
-    if xor_bytes(raw[:4]) != SIGNATURE:
-        raise ValueError("invalid main.pak signature")
-    if struct.unpack("<I", xor_bytes(raw[4:8]))[0] != 0:
-        raise ValueError("unsupported main.pak version")
-    entries = []
-    pos = 8
-    while True:
-        flags = xor_bytes(raw[pos:pos + 1])[0]
-        pos += 1
-        if flags & 0x80:
-            break
-        name_len = xor_bytes(raw[pos:pos + 1])[0]
-        pos += 1
-        name = xor_bytes(raw[pos:pos + name_len]).decode("utf-8").replace("\\", "/")
-        pos += name_len
-        size = struct.unpack("<I", xor_bytes(raw[pos:pos + 4]))[0]
-        pos += 4
-        extra = xor_bytes(raw[pos:pos + 8])
-        pos += 8
-        entries.append([name, extra, None])
-    for entry in entries:
-        size = None
-        # Sizes are recovered from the data section: entries are contiguous.
-        # Recompute below from the terminator position.
-    data_start = pos
-    sizes = []
-    cursor = data_start
-    for i, (name, _, _) in enumerate(entries):
-        # We don't know sizes from the index after conversion; recompute by
-        # scanning original index again is unnecessary: store them here.
-        pass
-    return entries, raw, data_start
 
 
 def parse_pak(path):
