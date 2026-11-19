@@ -5897,6 +5897,12 @@ void Board::DrawBackdrop(Graphics* g)
 			Rect aSrcRect(0, 0, Sexy::IMAGE_SOD1ROW->GetWidth(), Sexy::IMAGE_SOD1ROW->GetHeight());
 			Rect aDstRect(LAWN_XMIN, LAWN_YMIN + aRow * 100, aLawnWidth, 100);
 			g->DrawImage(Sexy::IMAGE_SOD1ROW, aDstRect, aSrcRect);
+
+			if (aRow > 0)
+			{
+				g->SetColor(Sexy::Color(0, 60, 0, 90));
+				g->FillRect(LAWN_XMIN, LAWN_YMIN + aRow * 100 - 2, aLawnWidth, 3);
+			}
 		}
 	}
 	else if (false && mLevel == 4 && mApp->IsFirstTimeAdventureMode())
