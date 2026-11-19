@@ -565,6 +565,11 @@ void GameSelector::Draw(Graphics* g)
 		return;
 
 	g->SetLinearBlend(true);
+
+	// Wide mobile menu backdrop fills the area outside the 800x600 selector art.
+	if (auto aMenuBg = mApp->mResourceManager->GetImage("IMAGE_REANIM_SELECTORSCREEN_BG"))
+		g->DrawImage(aMenuBg, 0, 0, mWidth, mHeight);
+
 	Reanimation* aSelectorReanim = mApp->ReanimationGet(mSelectorReanimID);
 	aSelectorReanim->DrawRenderGroup(g, 1);  // "SelectorScreen_BG"
 	for (int i = 0; i < 6; i++)
@@ -606,7 +611,7 @@ void GameSelector::Draw(Graphics* g)
 		float aStringWidth = Sexy::FONT_BRIANNETOD16->StringWidth(aWelcomeStr);
 		SexyTransform2D aOffsetMatrix;
 		// add the widget position so the text moves when sliding
-		aOffsetMatrix.Translate(170.5f - static_cast<int>(aStringWidth * 0.5f) + mX, 102.5f + mY);
+		aOffsetMatrix.Translate(170.5f - static_cast<int>(aStringWidth * 0.5f) + mX + (mApp->mWidth - 800) * 0.5f, 102.5f + mY);
 		PvzpDrawStringMatrix(g, Sexy::FONT_BRIANNETOD16, aOverlayMatrix * aOffsetMatrix, aWelcomeStr, Color(255, 245, 200));
 
 	}
@@ -636,7 +641,8 @@ void GameSelector::DrawOverlay(Graphics* g)
 		int aRightIdx = aSelectorReanim->FindTrackIndex("SelectorScreen_BG_Right");
 		ReanimatorTransform aTransform;
 		aSelectorReanim->GetCurrentTransform(aRightIdx, &aTransform);
-		float aTransAreaX = aTransform.mTransX + aOffsetX;
+		const float aWideShift = (mApp->mWidth - 800) * 0.5f;
+		float aTransAreaX = aTransform.mTransX + aOffsetX + aWideShift;
 		float aTransAreaY = aTransform.mTransY + aOffsetY;
 		float aTransSubX = aTransAreaX;
 		float aTransSubY = aTransAreaY;
