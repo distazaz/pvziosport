@@ -1132,13 +1132,13 @@ void CutScene::AnimateBoard()
 	int aBoardOffset = 0;
 	if (mCutsceneTime <= aTimePanRightStart)
 	{
-		mBoard->Move(aBoardOffset, 0);
+		mBoard->Move(0, 0);
 	}
 	if (mCutsceneTime > aTimePanRightStart && mCutsceneTime <= aTimePanRightEnd)
 	{
-		int aPanOffset = CalcPosition(aTimePanRightStart, aTimePanRightEnd, -aBoardOffset, BOARD_IMAGE_WIDTH_OFFSET - mApp->mWidth);
-		mBoard->Move(-aPanOffset, 0);
+		mBoard->Move(0, 0);
 	}
+	mBoard->Move(0, 0);
 
 	// Seed chooser animation
 	if (mBoard->ChooseSeedsOnCurrentLevel())

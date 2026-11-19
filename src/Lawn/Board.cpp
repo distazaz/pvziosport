@@ -5888,12 +5888,7 @@ void Board::DrawBackdrop(Graphics* g)
 		Rect aWideSrc(0, 0, 1280, 600);
 		Rect aWideDst(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 		g->DrawImage(Sexy::IMAGE_BACKGROUND1UNSODDED, aWideDst, aWideSrc);
-		g->DrawImage(Sexy::IMAGE_SOD1ROW,
-			static_cast<int>((239 - BOARD_OFFSET) * aScale),
-			static_cast<int>(265 * aScale),
-			static_cast<int>(Sexy::IMAGE_SOD1ROW->GetWidth() * aScale),
-			static_cast<int>(Sexy::IMAGE_SOD1ROW->GetHeight() * aScale));
-		int aWidth = PvzpAnimateCurve(0, 1000, mSodPosition, 0, Sexy::IMAGE_SOD3ROW->GetWidth(), PvzpCurves::CURVE_LINEAR);
+		int aWidth = Sexy::IMAGE_SOD3ROW->GetWidth();
 		Rect aSrcRect(0, 0, aWidth, Sexy::IMAGE_SOD3ROW->GetHeight());
 		Rect aDstRect(
 			static_cast<int>((235 - BOARD_OFFSET) * aScale),
