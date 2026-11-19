@@ -567,7 +567,8 @@ void GameSelector::Draw(Graphics* g)
 	g->SetLinearBlend(true);
 
 	// Wide mobile menu backdrop fills the area outside the 800x600 selector art.
-	if (auto aMenuBg = mApp->mResourceManager->GetImage("IMAGE_REANIM_SELECTORSCREEN_BG"))
+	auto aMenuBg = mApp->mResourceManager->GetImage("IMAGE_REANIM_SELECTORSCREEN_BG");
+	if (aMenuBg.mSharedImage != nullptr || aMenuBg.mUnsharedImage != nullptr)
 		g->DrawImage(aMenuBg, 0, 0, mWidth, mHeight);
 
 	Reanimation* aSelectorReanim = mApp->ReanimationGet(mSelectorReanimID);
