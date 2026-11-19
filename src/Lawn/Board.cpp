@@ -5881,15 +5881,26 @@ void Board::DrawBackdrop(Graphics* g)
 		Rect aSrcRect(0, 0, aWidth, Sexy::IMAGE_SOD1ROW->GetHeight());
 		g->DrawImage(Sexy::IMAGE_SOD1ROW, 239 - BOARD_OFFSET, 265, aSrcRect);
 	}
-	else if (false && (((mLevel == 2 || mLevel == 3) && mApp->IsFirstTimeAdventureMode()) || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_RESODDED))
+	else if (((mLevel == 2 || mLevel == 3) && mApp->IsFirstTimeAdventureMode()) || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_RESODDED)
 	{
-		Rect aWideSrc(0, 0, 990, 600);
+		// Widescreen resodded look: dirt strips above/below the three grass rows.
+		const float aScale = static_cast<float>(BOARD_WIDTH) / 1280.0f;
+		Rect aWideSrc(0, 0, 1280, 600);
 		Rect aWideDst(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 		g->DrawImage(Sexy::IMAGE_BACKGROUND1UNSODDED, aWideDst, aWideSrc);
-		g->DrawImage(Sexy::IMAGE_SOD1ROW, 239 - BOARD_OFFSET, 265);
+		g->DrawImage(Sexy::IMAGE_SOD1ROW,
+			static_cast<int>((239 - BOARD_OFFSET) * aScale),
+			static_cast<int>(265 * aScale),
+			static_cast<int>(Sexy::IMAGE_SOD1ROW->GetWidth() * aScale),
+			static_cast<int>(Sexy::IMAGE_SOD1ROW->GetHeight() * aScale));
 		int aWidth = PvzpAnimateCurve(0, 1000, mSodPosition, 0, Sexy::IMAGE_SOD3ROW->GetWidth(), PvzpCurves::CURVE_LINEAR);
 		Rect aSrcRect(0, 0, aWidth, Sexy::IMAGE_SOD3ROW->GetHeight());
-		g->DrawImage(Sexy::IMAGE_SOD3ROW, 235 - BOARD_OFFSET, 149, aSrcRect);
+		Rect aDstRect(
+			static_cast<int>((235 - BOARD_OFFSET) * aScale),
+			static_cast<int>(149 * aScale),
+			static_cast<int>(aWidth * aScale),
+			static_cast<int>(Sexy::IMAGE_SOD3ROW->GetHeight() * aScale));
+		g->DrawImage(Sexy::IMAGE_SOD3ROW, aDstRect, aSrcRect);
 	}
 	else if (false && mLevel == 4 && mApp->IsFirstTimeAdventureMode())
 	{
