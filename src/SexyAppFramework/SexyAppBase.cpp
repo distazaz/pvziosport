@@ -184,18 +184,41 @@ SexyAppBase::SexyAppBase()
 		mResourceDir = "";
 	}
 #elif defined(__IPHONEOS__)
-	// iOS: prefer assets in Documents (visible in Files app), but fall back to
-	// the app bundle so a self-contained IPA works without manual copying.
+	// iOS: prefer assets in Documents (visible in Files app). If a self-contained
+	// IPA was used, copy the bundled assets into Documents on first launch so the
+	// rest of the engine keeps using the well-tested Documents path.
 	const char* aDocuments = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
 	std::string aDocumentsDir = aDocuments != nullptr ? aDocuments : "";
+	const char* aBasePath = SDL_GetBasePath();
+	std::string aBaseDir = aBasePath != nullptr ? aBasePath : "";
+
 	if (!aDocumentsDir.empty() && std::filesystem::exists(std::filesystem::path(aDocumentsDir) / "main.pak"))
 	{
 		mResourceDir = aDocumentsDir;
 	}
+	else if (!aBaseDir.empty() && std::filesystem::exists(std::filesystem::path(aBaseDir) / "main.pak"))
+	{
+		std::error_code aError;
+		std::filesystem::create_directories(aDocumentsDir, aError);
+		std::filesystem::copy_file(
+			std::filesystem::path(aBaseDir) / "main.pak",
+			std::filesystem::path(aDocumentsDir) / "main.pak",
+			std::filesystem::copy_options::overwrite_existing,
+			aError
+		);
+		std::filesystem::copy(
+			std::filesystem::path(aBaseDir) / "properties",
+			std::filesystem::path(aDocumentsDir) / "properties",
+			std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing,
+			aError
+		);
+		SDL_Log("PvZP: copied bundled assets to Documents (%s), error=%s", aDocumentsDir.c_str(), aError.message().c_str());
+		mResourceDir = aDocumentsDir;
+	}
 	else
 	{
-		const char* aBasePath = SDL_GetBasePath();
-		mResourceDir = aBasePath != nullptr ? aBasePath : aDocumentsDir;
+		SDL_Log("PvZP: no assets in Documents (%s) or bundle (%s)", aDocumentsDir.c_str(), aBaseDir.c_str());
+		mResourceDir = aDocumentsDir;
 	}
 #elif defined(__EMSCRIPTEN__)
 	mResourceDir = "/";
