@@ -1128,7 +1128,8 @@ void CutScene::AnimateBoard()
 	}
 
 	// Pan the board right
-	int aBoardOffset = IsScrolledLeftAtStart() ? BOARD_OFFSET : 0;
+	// Widescreen shows the house already; no need to scroll the board right.
+	int aBoardOffset = 0;
 	if (mCutsceneTime <= aTimePanRightStart)
 	{
 		mBoard->Move(aBoardOffset, 0);
