@@ -39,7 +39,7 @@
 
 using namespace Sexy;
 
-constexpr const int MAX_GRID_SIZE_X = 13;
+constexpr const int MAX_GRID_SIZE_X = 9;
 constexpr const int MAX_GRID_SIZE_Y = 6;
 constexpr const int MAX_ZOMBIES_IN_WAVE = 50;
 constexpr const int MAX_ZOMBIE_WAVES = 100;
