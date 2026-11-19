@@ -442,6 +442,8 @@ void TitleScreen::Update()
 		}
 	}
 
+	int aGrassX = (mWidth - IMAGE_LOADBAR_DIRT->mWidth) / 2;
+	int aGrassY = mStartButton->mY - 17;
 	float aTriggerPoint[] = {
 		mTotalBarWidth * 0.11f,
 		mTotalBarWidth * 0.32f,
@@ -459,8 +461,8 @@ void TitleScreen::Update()
 			{
 				aReanimType = ReanimationType::REANIM_LOADBAR_ZOMBIEHEAD;
 			}
-			float aPosX = aTriggerPoint[i] + 225.0f;
-			float aPosY = 511.0f;
+			float aPosX = aGrassX + aTriggerPoint[i];
+			float aPosY = aGrassY - 6.0f;
 			Reanimation* aSproutReanim = mApp->AddReanimation(aPosX, aPosY, 0, aReanimType);
 			aSproutReanim->mAnimRate = 18.0f;
 			aSproutReanim->mLoopType = ReanimLoopType::REANIM_PLAY_ONCE_AND_HOLD;
