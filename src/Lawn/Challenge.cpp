@@ -2152,7 +2152,7 @@ void Challenge::DrawBackdrop(Graphics* g)
 
 	if (mApp->IsWallnutBowlingLevel() && mShowBowlingLine)
 	{
-		g->DrawImage(Sexy::IMAGE_WALLNUT_BOWLINGSTRIPE, 268, 77);
+		g->DrawImage(Sexy::IMAGE_WALLNUT_BOWLINGSTRIPE, LAWN_XMIN + 3 * GRID_CELL_WIDTH, 77);
 	}
 	if (mApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_1 || mApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_2 || mApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_3 ||
 		mApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_4 || mApp->mGameMode == GAMEMODE_PUZZLE_I_ZOMBIE_5)
