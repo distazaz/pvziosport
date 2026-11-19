@@ -1259,7 +1259,7 @@ void CutScene::AnimateBoard()
 				if (aLawnMower)
 				{
 					aLawnMower->mVisible = true;
-					aLawnMower->mPosX = CalcPosition(aTimeLawnMowerStart, aTimeLawnMowerStart + TimeLawnMowerDuration, LAWN_XMIN - 120.0f, LAWN_XMIN - 40.0f);
+					aLawnMower->mPosX = CalcPosition(aTimeLawnMowerStart, aTimeLawnMowerStart + TimeLawnMowerDuration, LAWN_XMIN - 140.0f, LAWN_XMIN - 60.0f);
 				}
 			}
 		}
