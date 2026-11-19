@@ -191,7 +191,7 @@ void TitleScreen::Draw(Graphics* g)
 	else
 	{
 		Graphics aClipG(*g);
-		aClipG.ClipRect(240, aGrassY, mCurBarWidth, IMAGE_LOADBAR_GRASS->mHeight);
+		aClipG.ClipRect(aGrassX, aGrassY, mCurBarWidth, IMAGE_LOADBAR_GRASS->mHeight);
 		aClipG.DrawImage(IMAGE_LOADBAR_GRASS, aGrassX, aGrassY);
 
 		float aRollLen = mCurBarWidth * 0.94f;
