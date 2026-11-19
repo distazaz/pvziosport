@@ -5885,7 +5885,8 @@ void Board::DrawBackdrop(Graphics* g)
 	{
 		// Widescreen resodded look: dirt strips above/below the three grass rows.
 		const float aScale = static_cast<float>(BOARD_WIDTH) / 1280.0f;
-		Rect aWideSrc(0, 0, 1280, 600);
+		int aSrcWidth = (mApp->mGameScene == GameScenes::SCENE_LEVEL_INTRO) ? 1280 : 990;
+		Rect aWideSrc(0, 0, aSrcWidth, 600);
 		Rect aWideDst(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 		g->DrawImage(Sexy::IMAGE_BACKGROUND1UNSODDED, aWideDst, aWideSrc);
 		int aWidth = Sexy::IMAGE_SOD3ROW->GetWidth();
@@ -5915,8 +5916,9 @@ void Board::DrawBackdrop(Graphics* g)
 		}
 		else
 		{
-			// Widescreen: show house, lawn, road and the cemetery at the edge.
-			Rect aSrcRect(0, 0, 1280, 600);
+			// Widescreen: the road is visible only in the level intro cutscene.
+			int aSrcWidth = (mApp->mGameScene == GameScenes::SCENE_LEVEL_INTRO) ? 1280 : 990;
+			Rect aSrcRect(0, 0, aSrcWidth, 600);
 			Rect aDestRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 			g->DrawImage(aBgImage, aDestRect, aSrcRect);
 		}
