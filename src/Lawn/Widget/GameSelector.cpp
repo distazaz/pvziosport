@@ -364,26 +364,23 @@ GameSelector::GameSelector(LawnApp* theApp)
 	AddWidget(mAlmanacButton);
 	AddWidget(mOverlayWidget);
 
-	// Widescreen: the selector art is authored for 800x600. Scale it and its
-	// widgets horizontally so the whole cemetery and Zombatar panel are visible.
-	const float aScale = static_cast<float>(mApp->mWidth) / 800.0f;
-	auto aScaleReanim = [&](ReanimationID theId)
+	// Widescreen: center the 800x600 selector art instead of stretching it.
+	// The Zombatar panel is pushed off-screen.
+	const float aWideShift = (mApp->mWidth - 800) * 0.5f;
+	auto aShiftReanim = [&](ReanimationID theId)
 	{
 		if (Reanimation* aReanim = mApp->ReanimationTryToGet(theId))
-			aReanim->mOverlayMatrix.m00 *= aScale;
+			aReanim->mOverlayMatrix.m02 += aWideShift;
 	};
-	aScaleReanim(mSelectorReanimID);
-	aScaleReanim(mLeafReanimID);
-	aScaleReanim(mHandReanimID);
+	aShiftReanim(mSelectorReanimID);
+	aShiftReanim(mLeafReanimID);
+	aShiftReanim(mHandReanimID);
 	for (int i = 0; i < 6; i++)
-		aScaleReanim(mCloudReanimID[i]);
+		aShiftReanim(mCloudReanimID[i]);
 	for (int i = 0; i < 3; i++)
-		aScaleReanim(mFlowerReanimID[i]);
-	for (auto* aWidget : mWidgets)
-	{
-		aWidget->mX = static_cast<int>(aWidget->mX * aScale);
-		aWidget->mWidth = static_cast<int>(aWidget->mWidth * aScale);
-	}
+		aShiftReanim(mFlowerReanimID[i]);
+	mZombatarButton->mVisible = false;
+	mZombatarWidget->mVisible = false;
 }
 
 GameSelector::~GameSelector()
@@ -961,8 +958,8 @@ void GameSelector::TrackButton(DialogButton* theButton, const char* theTrackName
 	ReanimatorTransform aTransform;
 	aSelectorReanim->GetCurrentTransform(aTrackIndex, &aTransform);
 
-	const float aScale = static_cast<float>(mApp->mWidth) / 800.0f;
-	theButton->mX = static_cast<int>((aTransform.mTransX + theOffsetX) * aScale);
+	const float aWideShift = (mApp->mWidth - 800) * 0.5f;
+	theButton->mX = static_cast<int>(aTransform.mTransX + theOffsetX + aWideShift);
 	theButton->mY = static_cast<int>(aTransform.mTransY + theOffsetY);
 }
 
@@ -1114,8 +1111,8 @@ void GameSelector::MouseDown(int x, int y, [[maybe_unused]] int theClickCount)
 	for (int i = 0; i < 3; i++)
 	{
 		Reanimation* aFlowerReanim = mApp->ReanimationGet(mFlowerReanimID[i]);
-		const float aScale = static_cast<float>(mApp->mWidth) / 800.0f;
-		if (aFlowerReanim->mAnimRate <= 0.0f && Distance2D(x, y, gFlowerCenter[i][0] * aScale, gFlowerCenter[i][1]) < 20.0f * aScale)
+		const float aWideShift = (mApp->mWidth - 800) * 0.5f;
+		if (aFlowerReanim->mAnimRate <= 0.0f && Distance2D(x, y, gFlowerCenter[i][0] + aWideShift, gFlowerCenter[i][1]) < 20.0f)
 		{
 			aFlowerReanim->mAnimRate = 24.0f;
 			mApp->PlayFoley(FoleyType::FOLEY_LIMBS_POP);

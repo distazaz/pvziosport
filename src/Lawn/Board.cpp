@@ -5889,13 +5889,14 @@ void Board::DrawBackdrop(Graphics* g)
 		Rect aWideSrc(0, 0, aSrcWidth, 600);
 		Rect aWideDst(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 		g->DrawImage(Sexy::IMAGE_BACKGROUND1UNSODDED, aWideDst, aWideSrc);
-		int aWidth = Sexy::IMAGE_SOD3ROW->GetWidth();
-		Rect aSrcRect(0, 0, aWidth, Sexy::IMAGE_SOD3ROW->GetHeight());
+		// Cover all five playable rows with grass, leaving dirt strips above
+		// and below like the mobile version.
+		Rect aSrcRect(0, 0, Sexy::IMAGE_SOD3ROW->GetWidth(), Sexy::IMAGE_SOD3ROW->GetHeight());
 		Rect aDstRect(
-			static_cast<int>((235 - BOARD_OFFSET) * aScale),
-			static_cast<int>(149 * aScale),
-			static_cast<int>(aWidth * aScale),
-			static_cast<int>(Sexy::IMAGE_SOD3ROW->GetHeight() * aScale));
+			LAWN_XMIN,
+			LAWN_YMIN,
+			MAX_GRID_SIZE_X * GRID_CELL_WIDTH,
+			5 * 100);
 		g->DrawImage(Sexy::IMAGE_SOD3ROW, aDstRect, aSrcRect);
 	}
 	else if (false && mLevel == 4 && mApp->IsFirstTimeAdventureMode())
