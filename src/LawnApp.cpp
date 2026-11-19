@@ -134,6 +134,7 @@ LawnApp::LawnApp()
 	mTrialType = TrialType::TRIALTYPE_NONE;
 	mDebugTrialLocked = false;
 	mMuteSoundsForCutscene = false;
+	mHardMode = false;
 	mMusicVolume = 0.85;
 	mSfxVolume = 0.5525;
 	mAutoStartLoadingThread = false;
@@ -318,12 +319,14 @@ void LawnApp::WriteToRegistry()
 		mPlayerInfo->SaveDetails();
 	}
 
+	RegistryWriteBoolean("HardMode", mHardMode);
 	SexyAppBase::WriteToRegistry();
 }
 
 void LawnApp::ReadFromRegistry()
 {
 	SexyApp::ReadFromRegistry();
+	RegistryReadBoolean("HardMode", &mHardMode);
 }
 
 bool LawnApp::WriteCurrentUserConfig()

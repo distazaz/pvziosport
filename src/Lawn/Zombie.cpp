@@ -877,6 +877,15 @@ void Zombie::ZombieInitialize(int theRow, ZombieType theType, bool theVariant, Z
 		mFlyingHealth /= 4;
 	}
 
+	if (mApp->IsHardModeEnabled() && !mApp->IsPuzzleMode())
+	{
+		float aHealthMult = static_cast<float>(mApp->GetDouble("HARDMODE_HEALTH_MULT", HARDMODE_ZOMBIE_HEALTH_MULT));
+		mBodyHealth = static_cast<int>(mBodyHealth * aHealthMult);
+		mHelmHealth = static_cast<int>(mHelmHealth * aHealthMult);
+		mShieldHealth = static_cast<int>(mShieldHealth * aHealthMult);
+		mFlyingHealth = static_cast<int>(mFlyingHealth * aHealthMult);
+	}
+
 	UpdateAnimSpeed();
 	if (mVariant)
 	{
@@ -1164,56 +1173,57 @@ void Zombie::BungeeDropZombie(Zombie* theDroppedZombie, int theGridX, int theGri
 
 void Zombie::PickRandomSpeed()
 {
+	float aVelX;
 	if (mZombiePhase == ZombiePhase::PHASE_SNORKEL_WALKING_IN_POOL)
 	{
-		mVelX = 0.3f;
+		aVelX = 0.3f;
 	}
 	else if (mZombiePhase == ZombiePhase::PHASE_DIGGER_WALKING)
 	{
 		if (mApp->IsIZombieLevel())
 		{
-			mVelX = 0.23f;
+			aVelX = 0.23f;
 		}
 		else
 		{
-			mVelX = 0.12f;
+			aVelX = 0.12f;
 		}
 	}
 	else if (mZombieType == ZombieType::ZOMBIE_IMP && mApp->IsIZombieLevel())
 	{
-		mVelX = 0.9f;
+		aVelX = 0.9f;
 	}
 	else if (mZombiePhase == ZombiePhase::PHASE_YETI_RUNNING)
 	{
-		mVelX = 0.8f;
+		aVelX = 0.8f;
 	}
 	else if (mZombieType == ZombieType::ZOMBIE_YETI)
 	{
-		mVelX = 0.4f;
+		aVelX = 0.4f;
 	}
 	else if (mZombieType == ZombieType::ZOMBIE_DANCER || mZombieType == ZombieType::ZOMBIE_BACKUP_DANCER ||
 		mZombieType == ZombieType::ZOMBIE_POGO || mZombieType == ZombieType::ZOMBIE_FLAG)
 	{
-		mVelX = 0.45f;
+		aVelX = 0.45f;
 	}
 	else if (mZombiePhase == ZombiePhase::PHASE_DIGGER_TUNNELING || mZombiePhase == ZombiePhase::PHASE_POLEVAULTER_PRE_VAULT ||
 		mZombieType == ZombieType::ZOMBIE_FOOTBALL || mZombieType == ZombieType::ZOMBIE_SNORKEL || mZombieType == ZombieType::ZOMBIE_JACK_IN_THE_BOX)
 	{
-		mVelX = RandRangeFloat(0.66f, 0.68f);
+		aVelX = RandRangeFloat(0.66f, 0.68f);
 	}
 	else if (mZombiePhase == ZombiePhase::PHASE_LADDER_CARRYING || mZombieType == ZombieType::ZOMBIE_SQUASH_HEAD)
 	{
-		mVelX = RandRangeFloat(0.79f, 0.81f);
+		aVelX = RandRangeFloat(0.79f, 0.81f);
 	}
 	else if (mZombiePhase == ZombiePhase::PHASE_NEWSPAPER_MAD || mZombiePhase == ZombiePhase::PHASE_DOLPHIN_WALKING ||
 		mZombiePhase == ZombiePhase::PHASE_DOLPHIN_WALKING_WITHOUT_DOLPHIN)
 	{
-		mVelX = RandRangeFloat(0.89f, 0.91f);
+		aVelX = RandRangeFloat(0.89f, 0.91f);
 	}
 	else
 	{
-		mVelX = RandRangeFloat(0.23f, 0.37f);
-		if (mVelX < 0.3f)
+		aVelX = RandRangeFloat(0.23f, 0.37f);
+		if (aVelX < 0.3f)
 		{
 			mAnimTicksPerFrame = 12;
 		}
@@ -1223,6 +1233,12 @@ void Zombie::PickRandomSpeed()
 		}
 	}
 
+	// Apply the multiplier once from the freshly picked base speed so repeated
+	// phase changes don't compound it.
+	float aSpeedMult = mApp->IsHardModeEnabled() && !mApp->IsPuzzleMode()
+		? static_cast<float>(mApp->GetDouble("HARDMODE_SPEED_MULT", HARDMODE_ZOMBIE_SPEED_MULT))
+		: 1.0f;
+	mVelX = aVelX * aSpeedMult;
 	UpdateAnimSpeed();
 }
 

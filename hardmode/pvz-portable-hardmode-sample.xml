@@ -1,0 +1,10 @@
+<Properties>
+    <String id="OPTIONS_HARD_MODE">Hard Mode</String>
+
+    <Double id="HARDMODE_HEALTH_MULT">1.6</Double>
+    <Double id="HARDMODE_SPEED_MULT">1.15</Double>
+    <Double id="HARDMODE_POINTS_MULT">1.35</Double>
+
+    <Integer id="OPTION_DLG_HARDMODE_CHECKBOX_Y">70</Integer>
+    <Integer id="OPTION_DLG_HARDMODE_LABEL_Y">93</Integer>
+</Properties>

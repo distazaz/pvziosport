@@ -580,24 +580,40 @@ bool DefinitionReadCompiledFile(const std::string& theCompiledFilePath, const De
 	PerfTimer aTimer;
 	aTimer.Start();
 
+	std::vector<uint8_t> aCompressedBuffer;
+
+	// Prefer a freshly compiled cache file, but fall back to p_fopen so compiled
+	// definitions shipped inside main.pak are readable too.
 	std::string aFullCompiledPath = DefinitionGetCompiledCacheFullPath(theCompiledFilePath);
 	std::ifstream aFileStream(Sexy::PathFromU8(aFullCompiledPath), std::ios::binary);
-	if (!aFileStream)
+	if (aFileStream)
 	{
-		aFileStream.open(Sexy::PathFromU8(theCompiledFilePath), std::ios::binary);
+		aFileStream.seekg(0, std::ios::end);
+		size_t aCompressedSize = (size_t)aFileStream.tellg();
+		aFileStream.seekg(0, std::ios::beg);
+		aCompressedBuffer.resize(aCompressedSize);
+		aFileStream.read(reinterpret_cast<char*>(aCompressedBuffer.data()), (std::streamsize)aCompressedSize);
+		if ((size_t)aFileStream.gcount() != aCompressedSize)
+		{
+			PvzpLogLn("Failed to read compiled file: {}", aFullCompiledPath);
+			return false;
+		}
 	}
-
-	if (!aFileStream) return false;
-
-	aFileStream.seekg(0, std::ios::end);
-	size_t aCompressedSize = (size_t)aFileStream.tellg();
-	aFileStream.seekg(0, std::ios::beg);
-	std::vector<uint8_t> aCompressedBuffer(aCompressedSize);
-	aFileStream.read(reinterpret_cast<char*>(aCompressedBuffer.data()), (std::streamsize)aCompressedSize);
-	bool aReadCompressedFailed = !aFileStream || (size_t)aFileStream.gcount() != aCompressedSize;
-	if (aReadCompressedFailed) {
-		PvzpLogLn("Failed to read compiled file: {}", theCompiledFilePath);
-		return false;
+	else
+	{
+		PFILE* aPFile = p_fopen(theCompiledFilePath.c_str(), "rb");
+		if (aPFile == nullptr) return false;
+		p_fseek(aPFile, 0, SEEK_END);
+		long aCompressedSize = p_ftell(aPFile);
+		p_fseek(aPFile, 0, SEEK_SET);
+		aCompressedBuffer.resize(static_cast<size_t>(aCompressedSize));
+		size_t aRead = p_fread(aCompressedBuffer.data(), 1, static_cast<int>(aCompressedSize), aPFile);
+		p_fclose(aPFile);
+		if (aRead != static_cast<size_t>(aCompressedSize))
+		{
+			PvzpLogLn("Failed to read compiled file: {}", theCompiledFilePath);
+			return false;
+		}
 	}
 
 	size_t aUncompressedSize;

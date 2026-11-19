@@ -136,6 +136,7 @@ public:
 	TrialType						mTrialType;
 	bool							mDebugTrialLocked;
 	bool							mMuteSoundsForCutscene;
+	bool							mHardMode;
 
 public:
 	LawnApp();
@@ -311,6 +312,7 @@ public:
 	bool							CanPauseNow();
 	bool					IsPuzzleMode();
 	bool					IsChallengeMode();
+	inline bool				IsHardModeEnabled() const { return mHardMode; }
 	static bool			IsEndlessIZombie(GameMode theGameMode);
 	void							CrazyDaveDoneHanding();
 	inline std::string				GetCurrentLevelName() { return "Unknown"; }

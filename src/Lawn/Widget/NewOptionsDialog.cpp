@@ -76,6 +76,7 @@ NewOptionsDialog::NewOptionsDialog(LawnApp* theApp, bool theFromGameSelector) :
 
 	mFullscreenCheckbox = MakeNewCheckbox(NewOptionsDialog::NewOptionsDialog_Fullscreen, this, !theApp->mIsWindowed);
 	mHardwareAccelerationCheckbox = MakeNewCheckbox(NewOptionsDialog::NewOptionsDialog_HardwareAcceleration, this, theApp->Is3DAccelerated());
+	mHardModeCheckbox = MakeNewCheckbox(NewOptionsDialog::NewOptionsDialog_HardMode, this, theApp->mHardMode);
 
 	if (mFromGameSelector)
 	{
@@ -128,6 +129,7 @@ void NewOptionsDialog::AddedToManager(Sexy::WidgetManager* theWidgetManager)
 	AddWidget(mSfxVolumeSlider.get());
 	AddWidget(mHardwareAccelerationCheckbox.get());
 	AddWidget(mFullscreenCheckbox.get());
+	AddWidget(mHardModeCheckbox.get());
 	AddWidget(mBackToGameButton.get());
 }
 
@@ -139,6 +141,7 @@ void NewOptionsDialog::RemovedFromManager(Sexy::WidgetManager* theWidgetManager)
 	RemoveWidget(mSfxVolumeSlider.get());
 	RemoveWidget(mFullscreenCheckbox.get());
 	RemoveWidget(mHardwareAccelerationCheckbox.get());
+	RemoveWidget(mHardModeCheckbox.get());
 	RemoveWidget(mBackToMainButton.get());
 	RemoveWidget(mBackToGameButton.get());
 	RemoveWidget(mRestartButton.get());
@@ -151,6 +154,7 @@ void NewOptionsDialog::Resize(int theX, int theY, int theWidth, int theHeight)
 	mSfxVolumeSlider->Resize(199, 143, 135, 40);
 	mHardwareAccelerationCheckbox->Resize(283, 175, 46, 45);
 	mFullscreenCheckbox->Resize(284, 206, 46, 45);
+	mHardModeCheckbox->Resize(284, mApp->GetInteger("OPTION_DLG_HARDMODE_CHECKBOX_Y", 70), 46, 45);
 	mAlmanacButton->Resize(107, 241, 209, 46);
 	mRestartButton->Resize(mAlmanacButton->mX, mAlmanacButton->mY + 43, 209, 46);
 	mBackToMainButton->Resize(mRestartButton->mX, mRestartButton->mY + 43, 209, 46);
@@ -190,12 +194,14 @@ void NewOptionsDialog::Draw(Sexy::Graphics* g)
 	int aSliderLabelsX = mApp->GetInteger("OPTION_DLG_SLIDER_LABELS_OFFSET_X", 186);
 	int aCheckboxLabelsX = mApp->GetInteger("OPTION_DLG_CHECKBOX_LABELS_OFFSET_X", 274);
 	float aFontScale = static_cast<float>(mApp->GetDouble("OPTION_DLG_LABEL_FONT_SCALE", 1.0));
+	int aHardModeLabelY = mApp->GetInteger("OPTION_DLG_HARDMODE_LABEL_Y", 93);
 	if (aFontScale != 1.0f)
 		g->SetScale(aFontScale, aFontScale, 0.0f, 0.0f);
 	PvzpDrawString(g, mApp->GetString("OPTIONS_MUSIC_LABEL", "Music"), aSliderLabelsX, 140 + aMusicOffset, FONT_DWARVENTODCRAFT18, aTextColor, DrawStringJustification::DS_ALIGN_RIGHT);
 	PvzpDrawString(g, mApp->GetString("OPTIONS_SOUNDFX", "Sound FX"), aSliderLabelsX, 167 + aSfxOffset, FONT_DWARVENTODCRAFT18, aTextColor, DrawStringJustification::DS_ALIGN_RIGHT);
 	PvzpDrawString(g, mApp->GetString("OPTIONS_3D_ACCELERATION", "3D Acceleration"), aCheckboxLabelsX, 197 + a3DAccelOffset, FONT_DWARVENTODCRAFT18, aTextColor, DrawStringJustification::DS_ALIGN_RIGHT);
 	PvzpDrawString(g, mApp->GetString("OPTIONS_FULL_SCREEN", "Full Screen"), aCheckboxLabelsX, 229 + aFullScreenOffset, FONT_DWARVENTODCRAFT18, aTextColor, DrawStringJustification::DS_ALIGN_RIGHT);
+	PvzpDrawString(g, mApp->GetString("OPTIONS_HARD_MODE", "Hard Mode"), aCheckboxLabelsX, aHardModeLabelY, FONT_DWARVENTODCRAFT18, aTextColor, DrawStringJustification::DS_ALIGN_RIGHT);
 	if (aFontScale != 1.0f)
 		g->SetScale(1.0f, 1.0f, 0.0f, 0.0f);
 }
@@ -241,6 +247,10 @@ void NewOptionsDialog::CheckboxChecked(int theId, bool checked)
 
 			mFullscreenCheckbox->SetChecked(true, false);
 		}
+		break;
+
+	case NewOptionsDialog::NewOptionsDialog_HardMode:
+		mApp->mHardMode = checked;
 		break;
 
 	case NewOptionsDialog::NewOptionsDialog_HardwareAcceleration:

@@ -51,3 +51,9 @@ constexpr const int FINAL_LEVEL = NUM_LEVELS;
 constexpr const int LAST_STAND_FLAGS = 5;
 constexpr const int SURVIVAL_NORMAL_FLAGS = 5;
 constexpr const int SURVIVAL_HARD_FLAGS = 10;
+
+// Opt-in "Hard Mode" difficulty multipliers.
+// Kept here so all gameplay tuning lives in one place.
+constexpr const float HARDMODE_ZOMBIE_HEALTH_MULT = 1.6f;
+constexpr const float HARDMODE_ZOMBIE_SPEED_MULT = 1.15f;
+constexpr const float HARDMODE_ZOMBIE_POINTS_MULT = 1.35f;

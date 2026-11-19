@@ -685,6 +685,12 @@ void Board::PickZombieWaves()
 			aZombiePoints *= 2;
 		}
 
+		if (mApp->IsHardModeEnabled())
+		{
+			float aPointsMult = static_cast<float>(mApp->GetDouble("HARDMODE_POINTS_MULT", HARDMODE_ZOMBIE_POINTS_MULT));
+			aZombiePoints = static_cast<int>(aZombiePoints * aPointsMult);
+		}
+
 		// Newly introduced zombies have fixed spawns in specific waves
 		if (aIntroZombieType != ZombieType::ZOMBIE_INVALID && aIntroZombieType != ZombieType::ZOMBIE_DUCKY_TUBE)
 		{

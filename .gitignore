@@ -405,6 +405,9 @@ gdb_run
 gdb_run-start
 main.pak
 main.unpak
+properties/
+pvz-portable.xml
+dist/
 tools/res/
 tools/res-bak/
 tools/run/
