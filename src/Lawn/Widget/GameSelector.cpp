@@ -363,6 +363,24 @@ GameSelector::GameSelector(LawnApp* theApp)
 	AddWidget(mStoreButton);
 	AddWidget(mAlmanacButton);
 	AddWidget(mOverlayWidget);
+
+	// Widescreen: the selector art is authored for 800x600, so center it and
+	// all of its widgets in the wider logical window.
+	const float aWideShift = (mApp->mWidth - 800) * 0.5f;
+	auto aShift = [&](ReanimationID theId)
+	{
+		if (Reanimation* aReanim = mApp->ReanimationTryToGet(theId))
+			aReanim->mOverlayMatrix.m02 += aWideShift;
+	};
+	aShift(mSelectorReanimID);
+	aShift(mLeafReanimID);
+	aShift(mHandReanimID);
+	for (int i = 0; i < 6; i++)
+		aShift(mCloudReanimID[i]);
+	for (int i = 0; i < 3; i++)
+		aShift(mFlowerReanimID[i]);
+	for (auto* aWidget : mWidgets)
+		aWidget->mX += static_cast<int>(aWideShift);
 }
 
 GameSelector::~GameSelector()

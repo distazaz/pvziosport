@@ -5872,7 +5872,7 @@ void Board::DrawBackdrop(Graphics* g)
 	default:											PVZP_ASSERT(false);											break;
 	}
 
-	if (mLevel == 1 && mApp->IsFirstTimeAdventureMode())
+	if (false && mLevel == 1 && mApp->IsFirstTimeAdventureMode())
 	{
 		Rect aWideSrc(0, 0, 990, 600);
 		Rect aWideDst(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
@@ -5881,7 +5881,7 @@ void Board::DrawBackdrop(Graphics* g)
 		Rect aSrcRect(0, 0, aWidth, Sexy::IMAGE_SOD1ROW->GetHeight());
 		g->DrawImage(Sexy::IMAGE_SOD1ROW, 239 - BOARD_OFFSET, 265, aSrcRect);
 	}
-	else if (((mLevel == 2 || mLevel == 3) && mApp->IsFirstTimeAdventureMode()) || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_RESODDED)
+	else if (false && (((mLevel == 2 || mLevel == 3) && mApp->IsFirstTimeAdventureMode()) || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_RESODDED))
 	{
 		Rect aWideSrc(0, 0, 990, 600);
 		Rect aWideDst(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
@@ -5891,7 +5891,7 @@ void Board::DrawBackdrop(Graphics* g)
 		Rect aSrcRect(0, 0, aWidth, Sexy::IMAGE_SOD3ROW->GetHeight());
 		g->DrawImage(Sexy::IMAGE_SOD3ROW, 235 - BOARD_OFFSET, 149, aSrcRect);
 	}
-	else if (mLevel == 4 && mApp->IsFirstTimeAdventureMode())
+	else if (false && mLevel == 4 && mApp->IsFirstTimeAdventureMode())
 	{
 		Rect aWideSrc(0, 0, 990, 600);
 		Rect aWideDst(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
