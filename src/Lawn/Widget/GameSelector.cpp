@@ -363,6 +363,27 @@ GameSelector::GameSelector(LawnApp* theApp)
 	AddWidget(mStoreButton);
 	AddWidget(mAlmanacButton);
 	AddWidget(mOverlayWidget);
+
+	// Widescreen: the selector art is authored for 800x600. Scale it and its
+	// widgets horizontally so the whole cemetery and Zombatar panel are visible.
+	const float aScale = static_cast<float>(mApp->mWidth) / 800.0f;
+	auto aScaleReanim = [&](ReanimationID theId)
+	{
+		if (Reanimation* aReanim = mApp->ReanimationTryToGet(theId))
+			aReanim->mOverlayMatrix.m00 *= aScale;
+	};
+	aScaleReanim(mSelectorReanimID);
+	aScaleReanim(mLeafReanimID);
+	aScaleReanim(mHandReanimID);
+	for (int i = 0; i < 6; i++)
+		aScaleReanim(mCloudReanimID[i]);
+	for (int i = 0; i < 3; i++)
+		aScaleReanim(mFlowerReanimID[i]);
+	for (auto* aWidget : mWidgets)
+	{
+		aWidget->mX = static_cast<int>(aWidget->mX * aScale);
+		aWidget->mWidth = static_cast<int>(aWidget->mWidth * aScale);
+	}
 }
 
 GameSelector::~GameSelector()
@@ -940,7 +961,8 @@ void GameSelector::TrackButton(DialogButton* theButton, const char* theTrackName
 	ReanimatorTransform aTransform;
 	aSelectorReanim->GetCurrentTransform(aTrackIndex, &aTransform);
 
-	theButton->mX = static_cast<int>(aTransform.mTransX + theOffsetX);
+	const float aScale = static_cast<float>(mApp->mWidth) / 800.0f;
+	theButton->mX = static_cast<int>((aTransform.mTransX + theOffsetX) * aScale);
 	theButton->mY = static_cast<int>(aTransform.mTransY + theOffsetY);
 }
 
@@ -1092,7 +1114,8 @@ void GameSelector::MouseDown(int x, int y, [[maybe_unused]] int theClickCount)
 	for (int i = 0; i < 3; i++)
 	{
 		Reanimation* aFlowerReanim = mApp->ReanimationGet(mFlowerReanimID[i]);
-		if (aFlowerReanim->mAnimRate <= 0.0f && Distance2D(x, y, gFlowerCenter[i][0], gFlowerCenter[i][1]) < 20.0f)
+		const float aScale = static_cast<float>(mApp->mWidth) / 800.0f;
+		if (aFlowerReanim->mAnimRate <= 0.0f && Distance2D(x, y, gFlowerCenter[i][0] * aScale, gFlowerCenter[i][1]) < 20.0f * aScale)
 		{
 			aFlowerReanim->mAnimRate = 24.0f;
 			mApp->PlayFoley(FoleyType::FOLEY_LIMBS_POP);

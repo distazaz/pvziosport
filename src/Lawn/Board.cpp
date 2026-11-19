@@ -5881,7 +5881,7 @@ void Board::DrawBackdrop(Graphics* g)
 		Rect aSrcRect(0, 0, aWidth, Sexy::IMAGE_SOD1ROW->GetHeight());
 		g->DrawImage(Sexy::IMAGE_SOD1ROW, 239 - BOARD_OFFSET, 265, aSrcRect);
 	}
-	else if (((mLevel == 2 || mLevel == 3) && mApp->IsFirstTimeAdventureMode()) || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_RESODDED)
+	else if ((mLevel <= 5 && mApp->IsFirstTimeAdventureMode()) || mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_RESODDED)
 	{
 		// Widescreen resodded look: dirt strips above/below the three grass rows.
 		const float aScale = static_cast<float>(BOARD_WIDTH) / 1280.0f;
