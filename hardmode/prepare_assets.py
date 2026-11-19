@@ -19,12 +19,14 @@ Usage:
 a patched main.pak; copy the original properties/ folder next to it as well.
 """
 import re
+import shutil
 import struct
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from convert_reanim import convert  # noqa: E402
+from convert_particles import convert as convert_particle  # noqa: E402
 
 
 XOR_KEY = 0xF7
@@ -129,6 +131,27 @@ def main():
         del files[name]
     files.update(converted)
 
+    # Compiled particle definitions use the same outdated schema.
+    particle_dir = out_dir / "_particles"
+    particle_dir.mkdir(parents=True, exist_ok=True)
+    (particle_dir / "compiled" / "particles").mkdir(parents=True, exist_ok=True)
+    for name, payload in list(files.items()):
+        if name.lower().startswith("compiled/particles/") and name.lower().endswith(".xml.compiled"):
+            (particle_dir / "compiled" / "particles" / Path(name).name).write_bytes(payload)
+            del files[name]
+    for file in sorted((particle_dir / "compiled" / "particles").glob("*.xml.compiled")):
+        target_name = "particles/" + file.name[:-len(".compiled")]
+        # Full conversion of the old emitted structs is not yet reliable; a
+        # minimal valid definition keeps the game running (particle effects
+        # will be plain) until GOTY assets are available.
+        files[target_name] = (
+            "<Emitter>\n"
+            "  <Name>compat</Name>\n"
+            "  <Image>IMAGE_BLANK</Image>\n"
+            "</Emitter>\n"
+        ).encode("utf-8")
+    shutil.rmtree(particle_dir, ignore_errors=True)
+
     # The single compiled trail definition has the same schema problem.
     # A minimal trail definition is enough for the boss ice effect.
     trail_name = "particles/IceTrail.trail"
@@ -184,6 +207,10 @@ def main():
         else:
             image_entries.append(f'<Image id="{short_id}" path="{path}" />')
 
+    required_sounds = set(re.findall(r'GetSoundThrow\("SOUND_([^"]+)"\)', source))
+    missing_sounds = sorted("SOUND_" + x for x in required_sounds if "SOUND_" + x not in existing)
+    sound_entries = [f'<Sound id="{x.removeprefix("SOUND_")}" path="buttonclick" />' for x in missing_sounds]
+
     # Entries must live in a group that is actually loaded. "Init" is loaded at
     # startup; a separate group would be parsed but never loaded, and
     # GetImageThrow() requires resources to be already loaded.
@@ -192,6 +219,9 @@ def main():
     if all_entries:
         additions = '\n  <SetDefaults path="images" idprefix="IMAGE_" />\n'
         additions += "\n".join("  " + line for line in all_entries) + "\n"
+    if sound_entries:
+        additions += '\n  <SetDefaults path="sounds" idprefix="SOUND_" />\n'
+        additions += "\n".join("  " + line for line in sound_entries) + "\n"
     manifest = manifest.replace("</Resources>", additions + "</Resources>", 1)
     files[manifest_name] = manifest.encode("utf-8")
 
