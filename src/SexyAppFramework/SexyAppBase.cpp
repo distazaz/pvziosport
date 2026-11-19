@@ -184,9 +184,19 @@ SexyAppBase::SexyAppBase()
 		mResourceDir = "";
 	}
 #elif defined(__IPHONEOS__)
-	// iOS: use Documents directory (visible in Files app via UIFileSharingEnabled)
+	// iOS: prefer assets in Documents (visible in Files app), but fall back to
+	// the app bundle so a self-contained IPA works without manual copying.
 	const char* aDocuments = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
-	mResourceDir = aDocuments != nullptr ? aDocuments : "";
+	std::string aDocumentsDir = aDocuments != nullptr ? aDocuments : "";
+	if (!aDocumentsDir.empty() && std::filesystem::exists(std::filesystem::path(aDocumentsDir) / "main.pak"))
+	{
+		mResourceDir = aDocumentsDir;
+	}
+	else
+	{
+		const char* aBasePath = SDL_GetBasePath();
+		mResourceDir = aBasePath != nullptr ? aBasePath : aDocumentsDir;
+	}
 #elif defined(__EMSCRIPTEN__)
 	mResourceDir = "/";
 #else
