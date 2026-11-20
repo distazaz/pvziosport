@@ -457,7 +457,21 @@ void MessageWidget::Draw(Graphics* g)
 
 	if (mMessageStyle == MessageStyle::MESSAGE_STYLE_HUGE_WAVE)
 	{
-		PvzpDrawString(g, mLabel, BOARD_WIDTH / 2, aPosY, aFont, aColor, DrawStringJustification::DS_ALIGN_CENTER);
+		float aAnimAlpha = 1.0f;
+		if (mTextReanimCount > 0)
+		{
+			if (Reanimation* aLead = mApp->ReanimationTryToGet(mTextReanimID[0]))
+			{
+				ReanimatorTransform aLeadTransform;
+				aLead->GetCurrentTransform(2, &aLeadTransform);
+				aAnimAlpha = aLeadTransform.mAlpha;
+			}
+		}
+		Color aFinalColor(aColor);
+		aFinalColor.mAlpha = std::clamp(FloatRoundToInt(aColor.mAlpha * aAnimAlpha), 0, 255);
+		SexyTransform2D aTextTransform;
+		aTextTransform.Translate(BOARD_WIDTH / 2 - aFont->StringWidth(mLabel) / 2, aPosY);
+		PvzpDrawStringMatrix(g, aFont, aTextTransform, mLabel, aFinalColor);
 		return;
 	}
 
