@@ -613,7 +613,7 @@ void GameSelector::Draw(Graphics* g)
 		float aStringWidth = Sexy::FONT_BRIANNETOD16->StringWidth(aWelcomeStr);
 		SexyTransform2D aOffsetMatrix;
 		// add the widget position so the text moves when sliding
-		aOffsetMatrix.Translate(170.5f - static_cast<int>(aStringWidth * 0.5f) + mX + (mApp->mWidth - 800) * 0.5f, 102.5f + mY);
+		aOffsetMatrix.Translate(170.5f - static_cast<int>(aStringWidth * 0.5f) + mX, 102.5f + mY);
 		PvzpDrawStringMatrix(g, Sexy::FONT_BRIANNETOD16, aOverlayMatrix * aOffsetMatrix, aWelcomeStr, Color(255, 245, 200));
 
 	}

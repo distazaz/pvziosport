@@ -455,6 +455,12 @@ void MessageWidget::Draw(Graphics* g)
 		break;
 	}
 
+	if (mMessageStyle == MessageStyle::MESSAGE_STYLE_HUGE_WAVE)
+	{
+		PvzpDrawString(g, mLabel, BOARD_WIDTH / 2, aPosY, aFont, aColor, DrawStringJustification::DS_ALIGN_CENTER);
+		return;
+	}
+
 	if (mReanimType != ReanimationType::REANIM_NONE)
 	{
 		if (aFont == Sexy::FONT_CONTINUUMBOLD14)
